@@ -125,13 +125,15 @@ https://github.com/user-attachments/assets/8f7a72c2-21cc-40ad-8d49-2f3c2b335ec6
 
 ## workspace limit of franka
 
-<img width="741" height="555" alt="image" src="https://github.com/user-attachments/assets/1ee2f01c-9b46-4c85-b651-88a65477a5f9" />
+<img width="738" height="550" alt="image" src="https://github.com/user-attachments/assets/ea650932-9a9e-4d71-90c1-f307ca7bef31" />
 
 
-<img width="738" height="548" alt="image" src="https://github.com/user-attachments/assets/ecdc2bf5-666c-4d43-9f0c-a8ab5892aaf1" />
+
+<img width="738" height="550" alt="image" src="https://github.com/user-attachments/assets/ecdc2bf5-666c-4d43-9f0c-a8ab5892aaf1" />
 
 
-![正常工作空间](https://github.com/user-attachments/assets/494522b1-796c-475a-8429-1384b7712de3)
+<img width="738" height="550" alt="image" src="https://github.com/user-attachments/assets/494522b1-796c-475a-8429-1384b7712de3" />
+
 
 
 ```
