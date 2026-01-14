@@ -111,6 +111,13 @@
 
 ## workspace limit of franka
 
+![工作空间奇异构型1](https://github.com/user-attachments/assets/910e0893-3ab3-4c58-ad10-6aa1629615fa)
+
+![工作空间奇异构型2](https://github.com/user-attachments/assets/37c4d354-a712-41bd-bb2d-63c73f06023c)
+
+![正常工作空间](https://github.com/user-attachments/assets/494522b1-796c-475a-8429-1384b7712de3)
+
+
 ```
 x: [0.3, 0.75]
 y: [-0.6, 0.6]
