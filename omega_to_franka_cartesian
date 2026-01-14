@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import Float64MultiArray
+
+class OmegaToCartesian(Node):
+    def __init__(self):
+        super().__init__('omega_to_cartesian')
+        
+        # 勿动
+        self.counter = 0
+
+        # 以下可以调整
+        self.send_frequency = 3000  # 每n次发送一次
+        self.duration = 2.5
+        self.scale_x = 3  # X坐标缩放倍数
+        self.scale_y = 3  # Y坐标缩放倍数
+        self.scale_z = 2   # Z坐标缩放倍数
+        self.offset_x = 0.4  # X坐标偏移
+        self.offset_y = 0  # Y坐标偏移
+        self.offset_z = 0.3  # Z坐标偏移
+
+        # Franka工作空间限制
+        self.x_min = 0.4
+        self.x_max = 0.7
+        self.y_min = -0.5
+        self.y_max = 0.5
+        self.z_min = 0.2
+        self.z_max = 0.6
+        
+        
+        # 创建订阅者（同时触发回调函数）
+        self.subscription = self.create_subscription(
+            PoseStamped,
+            '/sigma1/pose',
+            self.pose_callback,
+            10)
+        
+        # 创建发布者
+        self.publisher = self.create_publisher(
+            Float64MultiArray,
+            '/NS_1/cartesian_move',
+            10)
+        
+        self.get_logger().info('Omega to Cartesian converter started')
+
+    # 回调函数处理订阅数据
+    def pose_callback(self, msg):
+        self.counter += 1
+        
+        if self.counter % self.send_frequency != 0:
+            return
+    
+        x = msg.pose.position.x
+        y = msg.pose.position.y
+        z = msg.pose.position.z
+        
+        qx = msg.pose.orientation.x
+        qy = msg.pose.orientation.y
+        qz = msg.pose.orientation.z
+        qw = msg.pose.orientation.w
+        
+        # 映射后的franka坐标
+        x_transformed = -x * self.scale_x + self.offset_x
+        y_transformed = -y * self.scale_y + self.offset_y
+        z_transformed = z * self.scale_z + self.offset_z
+
+        # 安全保护机制
+        x_transformed = max(self.x_min, min(self.x_max, x_transformed))
+        y_transformed = max(self.y_min, min(self.y_max, y_transformed))
+        z_transformed = max(self.z_min, min(self.z_max, z_transformed))
+        
+        
+        array_msg = Float64MultiArray()
+        array_msg.data = [
+            x_transformed,   # x
+            y_transformed,   # y
+            z_transformed,   # z
+            qw,             # qw
+            qx,             # qx
+            qy,             # qy
+            qz,             # qz
+            self.duration
+        ]
+        
+        self.publisher.publish(array_msg)
+        
+        self.get_logger().info(
+            f'Published: [{x_transformed:.3f}, {y_transformed:.3f}, {z_transformed:.3f}, '
+            f'{qw:.3f}, {qx:.3f}, {qy:.3f}, {qz:.3f}, {self.duration:.1f}]')
+
+def main(args=None):
+    rclpy.init(args=args)
+    converter = OmegaToCartesian()
+    rclpy.spin(converter)
+    converter.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
